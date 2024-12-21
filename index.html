@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MJCET - Descriptive Map</title>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <style>
+        #map{
+            height : 600px;
+
+        }
+    </style>
+</head>
+<body>
+    <div id="map"></div>
+    
+</body>
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script>
+ var map = L.map('map',{
+    center : [17.428031363361665, 78.44281532128359],
+    zoom : 20,
+    zoomControl : false ,
+    fillOpacity : 0
+ }); //creatring a map variable and adding college center to it
+ var osm = L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
+    { attribution: '© OpenStreetMap contributors'})
+ osm.addTo(map); //fetching map from openstreetmap contributors
+const collegeBoundary = [ [17.42842349235658, 78.43976155396284],
+        [17.428571769246243, 78.44241245062645],
+        [17.428827676291217, 78.44238562852468],
+        [17.428843179967934, 78.44273344158476],
+        [17.42852585527761, 78.4427119839124],
+        [17.42868436842269, 78.44455285339747],
+        [17.42884814883468, 78.44585104255393],
+        [17.427343410771893, 78.44571156768588],
+        [17.42744577429867, 78.43987508089977],
+        [17.42842349235658, 78.43976155396284]
+    ]//defined college cordinates
+ const world = [[[-90, -180], [-90, 180], [90, 180], [90, -180], [-90, -180]]]; // defined world cordinates
+const Mask = L.geoJSON({
+    type : "Feature",
+    geometry : {
+        type : "Polygon",
+        coordinates : [
+            world[0],
+            collegeBoundary.map(coord => [coord[1] , coord[0]] )
+        ]
+    }
+},{
+    color : "white",
+    fillColor : "white",
+    fillOpacity : 1,
+    weight : 0
+}).addTo(map); //using help of geoJSON snippet
+L.polygon(collegeBoundary,{
+    color : "#3388ff",
+    fillOpacity : 0,
+    weight : 2
+}).addTo(map);
+
+const Bounds = L.latLngBounds(collegeBoundary)
+map.fitBounds(Bounds);
+map.setMaxBounds(Bounds);
+
+map.locate({watch : true },{setView : true },{maxZoom : 18}); //accessing user's location 
+let userMarker;
+map.on('locationfound' ,(e) => {
+    const { lat,lng } = e.latlng;
+
+if(!userMarker){
+        userMarker = L.marker([lat,lng]).addTo(map).bindPopup("Current Location");
+    }
+else {
+        userMarker.setLatLng([lat,lng]);
+    }
+});
+
+map.on('locationerror',(e)=>{
+    alert("Location access Denied");
+})          
+const labeledLocations = [
+    {lat : 17.42816259756977, lng : 78.44093972248255 , name : "4-Wheeler Parking"},
+    {lat : 17.427978343902772, lng : 78.44145470655805, name : "2-wheeler Parking"},
+    {lat : 17.427683273958856, lng :78.44246760308545 ,name : "Masjid SUES"},
+    {lat : 17.42790847322264, lng : 78.44216183125431, name : "BEE lab 1"},
+    {lat : 17.42797500931558, lng : 78.44219938218093, name : "BEE lab 2"},
+    {lat : 17.428493630772408, lng : 78.44241583721217, name : "Veg Canteen"},
+    {lat : 17.428503867063153, lng : 78.4424882568564, name : "Stationary"},
+    {lat : 17.428626702507493, lng : 78.44255799428711 , name : "SU Knowledge Hub"},
+    {lat : 17.42768496198484, lng : 78.44292813912423,name : "Indoor Games Block"},
+    {lat : 17.42786153869824, lng : 78.44357723371554, name : "S.U. College of Pharmacy"},
+    {lat : 17.428309377445906, lng : 78.44296032562846 , name : "Block 1"},
+    {lat : 17.42843477209465, lng :78.4433546103581 , name : "Block 2"},
+    // {lat : 17.428386149690212, lng : 78.44319904223305, name : "Blue Shed"},
+    {lat : 17.428396385987106, lng : 78.44381326810237, name : "Block 5"},
+    {lat : 17.428363118019888, lng :78.44326341524643, name : "Exam cell"},
+    {lat : 17.427841066049442, lng : 78.44464475290542 , name : "S.U.College of Law"},
+    {lat : 17.428595993654927, lng : 78.44445968047788, name : "2nd Entrance"},
+    {lat : 17.428665088568472, lng : 78.44457501546378, name : "S.U parking"},
+    {lat : 17.428360558942096, lng : 78.44507927076423, name : "S.U. Public school"},
+    {lat : 17.42866983452105, lng : 78.444810760449, name : "Playground"},
+    {lat : 17.42882375086303, lng : 78.44263577834352, name : "Back Gate "},
+    {lat : 17.428057165988047, lng : 78.44155003314832, name : "SAE Workshop"},
+    {lat : 17.428307955545947, lng : 78.44159563070208 , name : "Eng. workshop"},
+    {lat : 17.427632358396895, lng: 78.44185312275513, name : " Garden"},
+    
+]
+labeledLocations.forEach(location => {
+    L.marker([location.lat,location.lng]).addTo(map).bindPopup(location.name,{closeButton : false}).openPopup();
+})
+labeledLocations.forEach(location =>{
+    L.marker([location.lat,location.lng],{
+        icon : L.divIcon({
+        className: 'custom-label',
+            html: `<div style="background: rgba(255, 255, 255, 0.8); padding: 2px 2px; border-radius: 3px; font-size: 10px;">${location.name}</div>`,
+            iconSize: [50, 12],
+            iconAnchor: [5, 5] 
+
+    })
+}).addTo(map);
+});
+</script>
+</html>

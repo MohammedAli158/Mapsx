@@ -64,7 +64,7 @@ const Bounds = L.latLngBounds(collegeBoundary)
 map.fitBounds(Bounds);
 map.setMaxBounds(Bounds);
 
-map.locate({watch : true },{setView : true },{maxZoom : 18}); //accessing user's location 
+map.locate({watch : true },{setView : true },{maxZoom : 10}); //accessing user's location 
 let userMarker;
 map.on('locationfound' ,(e) => {
     const { lat,lng } = e.latlng;

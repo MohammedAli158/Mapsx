@@ -22,8 +22,10 @@
     center : [17.428031363361665, 78.44281532128359],
     zoom : 20,
     // zoomControl : false ,
-    fillOpacity : 0,
-     maxBoundsViscosity : 1
+     minZoom: 18, // Optional: Minimum zoom level
+    maxZoom: 25, // Increase this value to allow further zooming
+    // zoomControl: true
+    fillOpacity : 0
  }); //creatring a map variable and adding college center to it
  var osm = L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
     { attribution: '© OpenStreetMap contributors'})
@@ -62,10 +64,10 @@ L.polygon(collegeBoundary,{
 }).addTo(map);
 
 const Bounds = L.latLngBounds(collegeBoundary)
-map.fitBounds(Bounds,{maxZoom : 500});
+map.fitBounds(Bounds);
 map.setMaxBounds(Bounds);
 
-map.locate({watch : true }); //accessing user's location 
+map.locate({watch : true },{setView : true },{maxZoom : 18}); //accessing user's location 
 let userMarker;
 map.on('locationfound' ,(e) => {
     const { lat,lng } = e.latlng;

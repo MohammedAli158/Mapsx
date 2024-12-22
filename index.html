@@ -62,10 +62,10 @@ L.polygon(collegeBoundary,{
 }).addTo(map);
 
 const Bounds = L.latLngBounds(collegeBoundary)
-map.fitBounds(Bounds);
+map.fitBounds(Bounds,{maxZoom : 5});
 map.setMaxBounds(Bounds);
 
-map.locate({watch : true },{setView : true },{maxZoom : 1}); //accessing user's location 
+map.locate({watch : true }); //accessing user's location 
 let userMarker;
 map.on('locationfound' ,(e) => {
     const { lat,lng } = e.latlng;

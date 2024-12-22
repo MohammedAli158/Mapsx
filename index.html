@@ -62,7 +62,7 @@ L.polygon(collegeBoundary,{
 }).addTo(map);
 
 const Bounds = L.latLngBounds(collegeBoundary)
-map.fitBounds(Bounds,{maxZoom : 5});
+map.fitBounds(Bounds,{maxZoom : 500});
 map.setMaxBounds(Bounds);
 
 map.locate({watch : true }); //accessing user's location 
